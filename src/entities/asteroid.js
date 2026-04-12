@@ -42,25 +42,17 @@ export default class Asteroid {
     else speed = 120;
     return [Math.cos(angle) * speed, Math.sin(angle) * speed];
   }
-  update(dt) {
+  
+  update(dt, worldWidth, worldHeight) {
     this.x += this.vx * dt;
     this.y += this.vy * dt;
-    this.wrap();
+    this.wrap(worldWidth, worldHeight);
   }
-  //se usa cuando sale de la pantalla, reaparece pero en su borde complemento
-  wrap() {
-    if (!canvas) return;
-    if (this.x < -this.radius) {
-      this.x = canvas.width + this.radius;
-    }
-    if (this.x > canvas.width) {
-      this.x = -this.radius;
-    }
-    if (this.y < -this.radius) {
-      this.y = canvas.height + this.radius;
-    }
-    if (this.y > canvas.height) {
-      this.y = -this.radius;
-    }
+
+  wrap(worldWidth, worldHeight) {
+    if (this.x < -this.radius) this.x = worldWidth + this.radius;
+    if (this.x > worldWidth + this.radius) this.x = -this.radius;
+    if (this.y < -this.radius) this.y = worldHeight + this.radius;
+    if (this.y > worldHeight + this.radius) this.y = -this.radius;
   }
 }

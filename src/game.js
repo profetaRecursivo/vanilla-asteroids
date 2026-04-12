@@ -2,43 +2,33 @@
 import Asteroid from "./entities/asteroid.js"
 
 const asteroidsOnScreen = 10;
-let gameState;
 //canvas
 let canvas;
 let ctx;
-//jugador
-let score;
-let highscore;
-let lives;
-let level;
-//entidades
+let asteroids = [];
 let ship;
-let asteroids;
-let bullets;
-let particles;
-//tiempo
-let lastTime;
 
-function initGame() {
-	gameState = 'menu';
-	score = 0;
-	highscore = localStorage.getItem('highscore') || 0;
-	lives = 3;
-	level = 1;
-	ship = null;
-	asteroids = [];
-	bullets = [];
-	particles = [];
-	lastTime = 0;
-}
-
-initGame();
-//deberia de poner una funcion que meta una especie de valores a la lista de asteroides
 function createRandomAsteroid(){
-	//meter asteroides en posiciones y velocidades random en la pantalla
-	//pero deberian de ser asteroides que aparezcan del borde de la pantalla
-	//mockeamos por ahora
-	return new Asteroid(10, 10, "medium");
+  const asteroidSizes = ["big", "medium", "small"];
+	const w = canvas.width;
+	const h = canvas.height;
+	const size = sizes[Math.floor(Math.random()*sizes.length)];
+	const edge = Math.floor(Math.random() * 4);
+	let x = 0, y = 0;
+	if (edge === 0) {
+    x = Math.random() * w;
+    y = 0;
+  } else if (edge === 1) {
+    x = w;
+    y = Math.random() * h;
+  } else if (edge === 2) {
+    x = Math.random() * w;
+    y = h;
+  } else {
+    x = 0;
+    y = Math.random() * h;
+  }
+	return new Asteroid(x, y, size);
 }
 function fillAsteroids(){
 	const missingAsteroids = asteroidsOnScreen - asteroids.length;
@@ -46,6 +36,31 @@ function fillAsteroids(){
 		asteroids.push(createRandomAsteroid());
 	}
 }
-function update(deltaTime){
+export function update(deltaTime){
 	fillAsteroids();
+	for(const asteroid of asteroids){
+		asteroid.update(deltaTime, canvas.width, canvas.height);
+	}
+	
+}
+
+
+export function initGame(canvasElement){
+	canvas = canvasElement;
+	ctx = canvas.getContext("2d");
+	asteroids = [];
+	//falta poner lo de la nave aqui ojo
+	//ship = new Ship();
+
+}
+
+export function draw(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	for(const asteroid of asteroids){
+		const d = asteroid.radius*2;
+		ctx.drawImage(asteroid.sprite, asteroid.x - asteroid.radius, asteroid.y - asteroid.radius, d, d);
+	}
+	//dibujar la nave
+	//dibujar las balas que aun esten en pantalla
+	
 }
