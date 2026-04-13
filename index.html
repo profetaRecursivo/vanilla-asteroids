@@ -3,15 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
     <title>ASTEROIDS</title>
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/styles.css" />
   </head>
   <body>
-    <h1>ASTEROIDS</h1>
-    <div id="ui">
-      <span id="score">0</span>
+    <div class="home">
+      <h1 class="press-start-2p-regular game-title">ASTEROIDS</h1>
+      <button type="button" class="press-start-2p-regular" id="play-button">Play Game</button>
     </div>
-    <canvas id="scenario"></canvas>
+    <div class="game">
+      <div class="hud">
+        <div id="score">Score: <span id="score-value">0</span> pts</div>
+        <div id="lives">Lives: <span id="lives-value">0</span></div>
+        <div id="level">Level: <span id="level-value">1</span></div>
+        <canvas id="scenario" width="640" height="360"></canvas>
+      </div>
+    </div>
   </body>
   <script type="module" src="src/main.js"></script>
 </html>
