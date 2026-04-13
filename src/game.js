@@ -13,7 +13,7 @@ function createRandomAsteroid(){
   const asteroidSizes = ["big", "medium", "small"];
 	const w = canvas.width;
 	const h = canvas.height;
-	const size = sizes[Math.floor(Math.random()*sizes.length)];
+	const size = asteroidSizes[Math.floor(Math.random()*asteroidSizes.length)];
 	const edge = Math.floor(Math.random() * 4);
 	let x = 0, y = 0;
 	if (edge === 0) {
