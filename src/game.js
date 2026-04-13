@@ -7,6 +7,7 @@ let canvas;
 let ctx;
 let asteroids = [];
 let ship;
+const level = 1;//de momento asi seteado para que luego haya el final boss :p
 
 function createRandomAsteroid(){
   const asteroidSizes = ["big", "medium", "small"];

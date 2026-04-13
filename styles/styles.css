@@ -1,4 +1,40 @@
 *{
   margin: 0;
   padding: 0;
+  background-color: black;
+}
+body{
+  color: white;
+}
+.press-start-2p-regular {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.game-title{
+  font-size: 100px;
+}
+.game{
+  display: none;
+}
+#scenario{
+  border-style: solid;
+  border-width: 3px;
+  width: 150vh;
+}
+.home{
+  text-align: center;
+  align-items: center;
+  margin: 20rem;
+}
+button{
+  color: white;
+  padding: 2rem;
+  border: none;
+  margin: 1rem;
+  font-size: 2rem;
+}
+button:hover{
+  border: 3px solid white;
 }
