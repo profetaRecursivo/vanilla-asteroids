@@ -1,4 +1,3 @@
-//./../../assets/background_music/bardock.mp3
 export class Music {
   constructor(src) {
     this.src = src;
