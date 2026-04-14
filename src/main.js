@@ -16,6 +16,10 @@ function gameLoop(timestamp) {
 
 const playButton = document.getElementById("play-button");
 playButton.onclick = () => {
+  //98 a 238
+  titleMusic.stop();
+  const gameMusic = new Music(bardockTheme);
+  gameMusic.play(98, 238);
   initGame(canvas);
   requestAnimationFrame(gameLoop);
   //como oculto el boton?
@@ -23,10 +27,6 @@ playButton.onclick = () => {
   home[0].style.display = "none";
   const game_element = document.getElementsByClassName("game")[0];
   game_element.style.display = "block";
-  //98 a 238
-  titleMusic.stop();
-  const gameMusic = new Music(bardockTheme);
-  gameMusic.play(98, 238);
 };
 
 let musicStarted = false;
