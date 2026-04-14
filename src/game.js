@@ -1,11 +1,15 @@
 //estado del juego
 import Asteroid from "./entities/asteroid.js"
+import Ship from "./entities/ship.js"
+import Bullet from "./entities/bullet.js"
 
 const asteroidsOnScreen = 10;
 //canvas
 let canvas;
 let ctx;
 let asteroids = [];
+let bullets = [];
+let mousePos = {x: 0, y: 0};
 let ship;
 const level = 1;//de momento asi seteado para que luego haya el final boss :p
 
@@ -39,10 +43,17 @@ function fillAsteroids(){
 }
 export function update(deltaTime){
 	fillAsteroids();
+
+	ship.update(deltaTime, canvas.width, canvas.height, mousePos);
+
 	for(const asteroid of asteroids){
 		asteroid.update(deltaTime, canvas.width, canvas.height);
 	}
 	
+	for (const bullet of bullets) {
+		bullet.update(deltaTime, canvas.width, canvas.height);
+	}
+	bullets = bullets.filter(b => b.alive);
 }
 
 
@@ -50,8 +61,19 @@ export function initGame(canvasElement){
 	canvas = canvasElement;
 	ctx = canvas.getContext("2d");
 	asteroids = [];
-	//falta poner lo de la nave aqui ojo
-	//ship = new Ship();
+	// shiip y bullets
+	bullets = [];
+	ship = new Ship(canvas.width/2, canvas.height/2);
+
+	canvas.addEventListener("mousemove", (e) => {
+	const rect = canvas.getBoundingClientRect();
+	mousePos.x = e.clientX - rect.left;
+	mousePos.y = e.clientY - rect.top;
+  });
+
+  canvas.addEventListener("click", () => {
+	bullets.push(ship.shoot());
+  });
 
 }
 
@@ -63,5 +85,8 @@ export function draw(){
 	}
 	//dibujar la nave
 	//dibujar las balas que aun esten en pantalla
-	
+	for (const bullet of bullets) {
+		bullet.draw(ctx);
+	}
+	ship.draw(ctx);
 }
