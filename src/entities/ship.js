@@ -1,3 +1,5 @@
+import Bullet from "./bullet.js"
+
 export default class Ship {
   constructor(x, y) {
     this.x = x;
