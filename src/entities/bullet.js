@@ -5,14 +5,14 @@ export default class Bullet {
     this.vx = vx;
     this.vy = vy;
     this.radius = 4;
-    this.alive  = true; // se pone en false cuando sale del canvas
+    this.alive  = true;
  
     this.sprite = this._loadSprite();
   }
  
   _loadSprite() {
     const img = new Image();
-    img.src = "assets/sprites/bullet.png"; // ajusta al path real
+    img.src = "assets/sprites/bullet/bullet.png";
     return img;
   }
   update(dt, worldWidth, worldHeight) {

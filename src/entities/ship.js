@@ -27,7 +27,7 @@ export default class Ship {
 
   _loadSprite() {
     const img = new Image();
-    img.src = "assets/sprites/ship.png";
+    img.src = "assets/sprites/ship/ship.png";
     return img;
   }
 
@@ -82,15 +82,12 @@ export default class Ship {
   }
 
   shoot() {
-    const tipX = this.x - Math.sin(this.angle) * -(this.radius); // simplificado abajo
-    const tipY = this.y - Math.cos(this.angle) * -(this.radius);
+    const noseX = this.x + Math.cos(this.angle) * this.radius;
+    const noseY = this.y + Math.sin(this.angle) * this.radius;
 
-    const bulletSpeed = 600; // px/s
-    const bvx = -Math.sin(this.angle - Math.PI) * bulletSpeed;
-    const bvy = -Math.cos(this.angle - Math.PI) * bulletSpeed;
-
-    const noseX = this.x + Math.sin(this.angle - Math.PI) * this.radius;
-    const noseY = this.y - Math.cos(this.angle - Math.PI) * this.radius;
+    const bulletSpeed = 600;
+    const bvx = Math.cos(this.angle) * bulletSpeed;
+    const bvy = Math.sin(this.angle) * bulletSpeed;
 
     return new Bullet(noseX, noseY, bvx, bvy);
   }
@@ -98,7 +95,7 @@ export default class Ship {
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.rotate(this.angle);
+    ctx.rotate(this.angle + Math.PI / 2);
     const d = this.radius * 2;
     ctx.drawImage(this.sprite, -this.radius, -this.radius, d, d);
     ctx.restore();
