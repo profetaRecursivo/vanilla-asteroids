@@ -55,4 +55,22 @@ export default class Asteroid {
     if (this.y < -this.radius) this.y = worldHeight + this.radius;
     if (this.y > worldHeight + this.radius) this.y = -this.radius;
   }
+  divide() {
+    if (this.size === "small") return null;
+    const newSize = this.size === "big" ? "medium" : "small";
+    const first = new Asteroid(this.x, this.y, newSize);
+    const second = new Asteroid(this.x, this.y, newSize);
+    const angle = Math.atan2(this.vy, this.vx);
+    const speed = Math.sqrt(this.vx ** 2 + this.vy ** 2);
+    const deviation = (Math.PI / 6);
+    
+    const angle1 = angle - deviation;
+    const angle2 = angle + deviation;
+    
+    first.vx = Math.cos(angle1) * speed;
+    first.vy = Math.sin(angle1) * speed;
+    second.vx = Math.cos(angle2) * speed;
+    second.vy = Math.sin(angle2) * speed;
+    return [first, second];
+  }
 }
