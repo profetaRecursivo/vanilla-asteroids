@@ -127,7 +127,16 @@ export function initGame(canvasElement, sounds) {
   asteroids = [];
   bullets = [];
   ship = new Ship(canvas.width / 2, canvas.height / 2);
-
+     
+    canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mousePos.x = e.clientX - rect.left;
+        mousePos.y = e.clientY - rect.top;
+    });
+    canvas.addEventListener("mousedown", () => {
+        const bullet = ship.shoot(mousePos);
+        if (bullet) bullets.push(bullet);
+    });
   canvas.removeEventListener("mousemove", handleMouseMove);
   canvas.removeEventListener("mousedown", handleMouseDown);
   canvas.addEventListener("mousemove", handleMouseMove);
