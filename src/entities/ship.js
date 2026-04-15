@@ -8,10 +8,8 @@ export default class Ship {
     this.vy = 0;
     this.angle = 0;
 
-    this.speed = 250;
-    this.acceleration = 400;
-    this.friction = 0.92;
-    this.rotationSpeed = 3;
+    this.speed = 200;
+    this.acceleration = 800;
 
     this.radius = 20;
 
@@ -59,9 +57,6 @@ export default class Ship {
     this.vx += ax * dt;
     this.vy += ay * dt;
 
-    this.vx *= Math.pow(this.friction, dt * 60);
-    this.vy *= Math.pow(this.friction, dt * 60);
-
     const spd = Math.hypot(this.vx, this.vy);
     if (spd > this.speed) {
       this.vx = (this.vx / spd) * this.speed;
@@ -81,25 +76,37 @@ export default class Ship {
     if (this.y > worldHeight + this.radius) this.y = -this.radius;
   }
 
-  shoot() {
-    const noseX = this.x + Math.cos(this.angle) * this.radius;
-    const noseY = this.y + Math.sin(this.angle) * this.radius;
+  shoot(mousePos) {
+  // 1. Calculamos la distancia entre la nave y el mouse
+  const dx = mousePos.x - this.x;
+  const dy = mousePos.y - this.y;
+  const distance = Math.hypot(dx, dy);
 
-    const bulletSpeed = 600;
-    const bvx = Math.cos(this.angle) * bulletSpeed;
-    const bvy = Math.sin(this.angle) * bulletSpeed;
+  // 2. Creamos un vector unitario (dirección de longitud 1)
+  // Si la distancia es 0, evitamos dividir por cero
+  const dirX = distance !== 0 ? dx / distance : 0;
+  const dirY = distance !== 0 ? dy / distance : -1;
 
-    return new Bullet(noseX, noseY, bvx, bvy);
-  }
+  // 3. Posicionamos el proyectil en el borde de la nave (nose)
+  const noseX = this.x + dirX * this.radius;
+  const noseY = this.y + dirY * this.radius;
+
+  // 4. Aplicamos la velocidad constante en esa dirección
+  const bulletSpeed = 600;
+  const bvx = dirX * bulletSpeed;
+  const bvy = dirY * bulletSpeed;
+
+  return new Bullet(noseX, noseY, bvx, bvy);
+}
 
   draw(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.angle + Math.PI / 2);
-    const d = this.radius * 2;
-    ctx.drawImage(this.sprite, -this.radius, -this.radius, d, d);
-    ctx.restore();
-  }
+  ctx.save();
+  ctx.translate(this.x, this.y);
+  ctx.rotate(this.angle); // Usa el ángulo tal cual, ya que se calculó con el offset
+  const d = this.radius * 2;
+  ctx.drawImage(this.sprite, -this.radius, -this.radius, d, d);
+  ctx.restore();
+}
 
   destroy() {
     window.removeEventListener("keydown", this._onKeyDown);
