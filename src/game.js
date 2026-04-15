@@ -1,7 +1,11 @@
 //estado del juego
-import Asteroid from "./entities/asteroid.js"
-import Ship from "./entities/ship.js"
-import Bullet from "./entities/bullet.js"
+import Asteroid from "./entities/asteroid.js";
+import Ship from "./entities/ship.js";
+import Bullet from "./entities/bullet.js";
+import {
+  bullet_with_asteroid,
+  ship_with_asteroid,
+} from "./systems/collision.js";
 
 const asteroidsOnScreen = 10;
 //canvas
@@ -9,18 +13,19 @@ let canvas;
 let ctx;
 let asteroids = [];
 let bullets = [];
-let mousePos = {x: 0, y: 0};
+let mousePos = { x: 0, y: 0 };
 let ship;
-const level = 1;//de momento asi seteado para que luego haya el final boss :p
+const level = 1; //de momento asi seteado para que luego haya el final boss :p
 
-function createRandomAsteroid(){
+function createRandomAsteroid() {
   const asteroidSizes = ["big", "medium", "small"];
-	const w = canvas.width;
-	const h = canvas.height;
-	const size = asteroidSizes[Math.floor(Math.random()*asteroidSizes.length)];
-	const edge = Math.floor(Math.random() * 4);
-	let x = 0, y = 0;
-	if (edge === 0) {
+  const w = canvas.width;
+  const h = canvas.height;
+  const size = asteroidSizes[Math.floor(Math.random() * asteroidSizes.length)];
+  const edge = Math.floor(Math.random() * 4);
+  let x = 0,
+    y = 0;
+  if (edge === 0) {
     x = Math.random() * w;
     y = 0;
   } else if (edge === 1) {
@@ -33,58 +38,89 @@ function createRandomAsteroid(){
     x = 0;
     y = Math.random() * h;
   }
-	return new Asteroid(x, y, size);
+  return new Asteroid(x, y, size);
 }
-function fillAsteroids(){
-	const missingAsteroids = asteroidsOnScreen - asteroids.length;
-	for(let i = 0; i<missingAsteroids; i++){
-		asteroids.push(createRandomAsteroid());
-	}
+function fillAsteroids() {
+  const missingAsteroids = asteroidsOnScreen - asteroids.length;
+  for (let i = 0; i < missingAsteroids; i++) {
+    asteroids.push(createRandomAsteroid());
+  }
 }
-export function update(deltaTime){
-	fillAsteroids();
+export function update(deltaTime) {
+  //fillAsteroids();
 
-	ship.update(deltaTime, canvas.width, canvas.height, mousePos);
+  ship.update(deltaTime, canvas.width, canvas.height, mousePos);
 
-	for(const asteroid of asteroids){
-		asteroid.update(deltaTime, canvas.width, canvas.height);
-	}
-	
-	for (const bullet of bullets) {
-		bullet.update(deltaTime, canvas.width, canvas.height);
-	}
-	bullets = bullets.filter(b => b.alive);
+  for (const asteroid of asteroids) {
+    asteroid.update(deltaTime, canvas.width, canvas.height);
+  }
+
+  for (const bullet of bullets) {
+    bullet.update(deltaTime, canvas.width, canvas.height);
+  }
+  bullets = bullets.filter((b) => b.alive);
+  //despues de actualizar todo, chequeamos colisiones
+  check_collisions();
 }
-
+function check_collisions() {
+  for (const asteroid of asteroids) {
+    if (ship_with_asteroid(ship, asteroid)) {
+      //matar la nave
+    }
+  }
+  for (const bullet of bullets) {
+    for (const asteroid of asteroids) {
+      if (bullet_with_asteroid(bullet, asteroid)) {
+        //matar la bala y el asteroide
+        bullet.alive = false;
+				if (asteroid.size === "big" || asteroid.size === "medium") {
+					const[first, second] = asteroid.divide();
+					asteroids.push(first);
+					asteroids.push(second);
+				}
+        asteroids = asteroids.filter((a) => a !== asteroid);
+				//pero si el asteroide es grande o mediano, spawneamos 2 mas chicos
+        break;
+      }
+    }
+  }
+}
 
 export function initGame(canvasElement) {
-    canvas = canvasElement;
-    ctx = canvas.getContext("2d");
-    asteroids = [];
-    bullets = [];
-    ship = new Ship(canvas.width / 2, canvas.height / 2);
+  canvas = canvasElement;
+  ctx = canvas.getContext("2d");
+  asteroids = [];
+  bullets = [];
+  ship = new Ship(canvas.width / 2, canvas.height / 2);
 
-    canvas.addEventListener("mousemove", (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mousePos.x = e.clientX - rect.left;
-        mousePos.y = e.clientY - rect.top;
-    });
-    canvas.addEventListener("mousedown", () => {
-        const bullet = ship.shoot(mousePos);
-        if (bullet) bullets.push(bullet);
-    });
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mousePos.x = e.clientX - rect.left;
+    mousePos.y = e.clientY - rect.top;
+  });
+  canvas.addEventListener("mousedown", () => {
+    const bullet = ship.shoot(mousePos);
+    if (bullet) bullets.push(bullet);
+  });
+  fillAsteroids();
 }
 
-export function draw(){
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	for(const asteroid of asteroids){
-		const d = asteroid.radius*2;
-		ctx.drawImage(asteroid.sprite, asteroid.x - asteroid.radius, asteroid.y - asteroid.radius, d, d);
-	}
-	//dibujar la nave
-	//dibujar las balas que aun esten en pantalla
-	for (const bullet of bullets) {
-		bullet.draw(ctx);
-	}
-	ship.draw(ctx);
+export function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const asteroid of asteroids) {
+    const d = asteroid.radius * 2;
+    ctx.drawImage(
+      asteroid.sprite,
+      asteroid.x - asteroid.radius,
+      asteroid.y - asteroid.radius,
+      d,
+      d,
+    );
+  }
+  //dibujar la nave
+  //dibujar las balas que aun esten en pantalla
+  for (const bullet of bullets) {
+    bullet.draw(ctx);
+  }
+  ship.draw(ctx);
 }
