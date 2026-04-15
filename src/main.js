@@ -16,12 +16,13 @@ function gameLoop(timestamp) {
 }
 
 const playButton = document.getElementById("play-button");
-playButton.onclick = () => {
+playButton.onclick = async () => {
   //98 a 238
   titleMusic.stop();
   const gameMusic = new Music(bardockTheme);
   gameMusic.play(98, 238);
-  initGame(canvas);
+  await soundEffects.loadAll();
+  initGame(canvas, soundEffects);
   requestAnimationFrame(gameLoop);
   //como oculto el boton?
   const home = document.getElementsByClassName("home");
