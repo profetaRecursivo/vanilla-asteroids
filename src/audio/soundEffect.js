@@ -42,6 +42,7 @@ export default class SoundEffect {
       this.load("shoot", "assets/sounds/shoot.wav"),
       this.load("explosion", "assets/sounds/explosion.wav"),
       this.load("gameOver", "assets/sounds/game_over.wav"),
+      this.load("hurt", "assets/sounds/hurt.wav"),
     ]);
   }
 }

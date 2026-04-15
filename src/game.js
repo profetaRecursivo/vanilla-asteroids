@@ -15,6 +15,7 @@ let asteroids = [];
 let bullets = [];
 let mousePos = { x: 0, y: 0 };
 let ship;
+let soundEffects;
 const level = 1; //de momento asi seteado para que luego haya el final boss :p
 
 function createRandomAsteroid() {
@@ -65,7 +66,9 @@ export function update(deltaTime) {
 function check_collisions() {
   for (const asteroid of asteroids) {
     if (ship_with_asteroid(ship, asteroid)) {
-      //matar la nave
+      //quitarle una vida a la nave y volverla "invencible 3 segundos"
+			//si ya no tiene vidas RECIEN la matamos pi
+			soundEffects.hurt();
     }
   }
   for (const bullet of bullets) {
@@ -73,22 +76,24 @@ function check_collisions() {
       if (bullet_with_asteroid(bullet, asteroid)) {
         //matar la bala y el asteroide
         bullet.alive = false;
-				if (asteroid.size === "big" || asteroid.size === "medium") {
-					const[first, second] = asteroid.divide();
-					asteroids.push(first);
-					asteroids.push(second);
-				}
+        if (asteroid.size === "big" || asteroid.size === "medium") {
+          const [first, second] = asteroid.divide();
+          asteroids.push(first);
+          asteroids.push(second);
+        }
         asteroids = asteroids.filter((a) => a !== asteroid);
-				//pero si el asteroide es grande o mediano, spawneamos 2 mas chicos
+				soundEffects.explosion();
+        //pero si el asteroide es grande o mediano, spawneamos 2 mas chicos
         break;
       }
     }
   }
 }
 
-export function initGame(canvasElement) {
+export function initGame(canvasElement, sounds) {
   canvas = canvasElement;
   ctx = canvas.getContext("2d");
+  soundEffects = sounds;
   asteroids = [];
   bullets = [];
   ship = new Ship(canvas.width / 2, canvas.height / 2);
@@ -100,7 +105,10 @@ export function initGame(canvasElement) {
   });
   canvas.addEventListener("mousedown", () => {
     const bullet = ship.shoot(mousePos);
-    if (bullet) bullets.push(bullet);
+    if (bullet) {
+      bullets.push(bullet);
+      soundEffects.shoot();
+    }
   });
   fillAsteroids();
 }
