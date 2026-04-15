@@ -57,24 +57,22 @@ export function update(deltaTime){
 }
 
 
-export function initGame(canvasElement){
-	canvas = canvasElement;
-	ctx = canvas.getContext("2d");
-	asteroids = [];
-	// shiip y bullets
-	bullets = [];
-	ship = new Ship(canvas.width/2, canvas.height/2);
+export function initGame(canvasElement) {
+    canvas = canvasElement;
+    ctx = canvas.getContext("2d");
+    asteroids = [];
+    bullets = [];
+    ship = new Ship(canvas.width / 2, canvas.height / 2);
 
-	canvas.addEventListener("mousemove", (e) => {
-	const rect = canvas.getBoundingClientRect();
-	mousePos.x = e.clientX - rect.left;
-	mousePos.y = e.clientY - rect.top;
-  });
-
-  canvas.addEventListener("click", () => {
-	bullets.push(ship.shoot());
-  });
-
+    canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mousePos.x = e.clientX - rect.left;
+        mousePos.y = e.clientY - rect.top;
+    });
+    canvas.addEventListener("mousedown", () => {
+        const bullet = ship.shoot(mousePos);
+        if (bullet) bullets.push(bullet);
+    });
 }
 
 export function draw(){
