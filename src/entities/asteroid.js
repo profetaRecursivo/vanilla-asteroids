@@ -62,9 +62,11 @@ export default class Asteroid {
     const second = new Asteroid(this.x, this.y, newSize);
     const angle = Math.atan2(this.vy, this.vx);
     const speed = Math.sqrt(this.vx ** 2 + this.vy ** 2);
-    const deviation = Math.PI / 6;
+    const deviation = (Math.PI / 6);
+    
     const angle1 = angle - deviation;
     const angle2 = angle + deviation;
+    
     first.vx = Math.cos(angle1) * speed;
     first.vy = Math.sin(angle1) * speed;
     second.vx = Math.cos(angle2) * speed;

@@ -167,6 +167,7 @@ export function draw() {
     );
     return;
   }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (const asteroid of asteroids) {
     const d = asteroid.radius * 2;
