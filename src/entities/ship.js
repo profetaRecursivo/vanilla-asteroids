@@ -77,21 +77,21 @@ export default class Ship {
   }
 
   shoot(mousePos) {
-  // 1. Calculamos la distancia entre la nave y el mouse
+  // calculo dist de nave y mouse
   const dx = mousePos.x - this.x;
   const dy = mousePos.y - this.y;
   const distance = Math.hypot(dx, dy);
 
-  // 2. Creamos un vector unitario (dirección de longitud 1)
-  // Si la distancia es 0, evitamos dividir por cero
+  // vector unitario long 1
+  // di la dist es 0, evitamos dividir
   const dirX = distance !== 0 ? dx / distance : 0;
   const dirY = distance !== 0 ? dy / distance : -1;
 
-  // 3. Posicionamos el proyectil en el borde de la nave (nose)
+  // bullet al borde de la nave
   const noseX = this.x + dirX * this.radius;
   const noseY = this.y + dirY * this.radius;
 
-  // 4. Aplicamos la velocidad constante en esa dirección
+  // velocidad constante a la bala
   const bulletSpeed = 600;
   const bvx = dirX * bulletSpeed;
   const bvy = dirY * bulletSpeed;
@@ -102,7 +102,7 @@ export default class Ship {
   draw(ctx) {
   ctx.save();
   ctx.translate(this.x, this.y);
-  ctx.rotate(this.angle); // Usa el ángulo tal cual, ya que se calculó con el offset
+  ctx.rotate(this.angle);
   const d = this.radius * 2;
   ctx.drawImage(this.sprite, -this.radius, -this.radius, d, d);
   ctx.restore();
