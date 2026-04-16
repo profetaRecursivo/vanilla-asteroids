@@ -77,6 +77,7 @@ export default class Ship {
   }
 
   shoot(mousePos) {
+  // calculo dist de nave y mouse
   const dx = mousePos.x - this.x;
   const dy = mousePos.y - this.y;
   const distance = Math.hypot(dx, dy);

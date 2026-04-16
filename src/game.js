@@ -1,7 +1,7 @@
 //estado del juego
 import Asteroid from "./entities/asteroid.js";
 import Ship from "./entities/ship.js";
-import Bullet from "./entities/bullet.js";
+
 import {
   bullet_with_asteroid,
   ship_with_asteroid,
@@ -99,9 +99,17 @@ export function initGame(canvasElement, sounds) {
   ship = new Ship(canvas.width / 2, canvas.height / 2);
 
   canvas.addEventListener("mousemove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mousePos.x = e.clientX - rect.left;
-    mousePos.y = e.clientY - rect.top;
+	// estas coordenadas son del canvas css lo que se dibuja
+    //const rect = canvas.getBoundingClientRect();
+    //mousePos.x = e.clientX - rect.left;
+    //mousePos.y = e.clientY - rect.top;
+	// estas son de el canvas real aqui esta la posicion del mouse
+	// entonces las coordenadas son distintas ya que el canvas css varia segun la pantalla
+	const rect = canvas.getBoundingClientRect();
+  	const scaleX = canvas.width  / rect.width;
+  	const scaleY = canvas.height / rect.height;
+  	mousePos.x = (e.clientX - rect.left) * scaleX;
+  	mousePos.y = (e.clientY - rect.top)  * scaleY;
   });
   canvas.addEventListener("mousedown", () => {
     const bullet = ship.shoot(mousePos);
