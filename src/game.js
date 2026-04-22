@@ -19,6 +19,21 @@ let soundEffects;
 let gameOver = false;
 const level = 1; //de momento asi seteado para que luego haya el final boss :p
 
+function handleMouseMove(e) {
+  const rect = canvas.getBoundingClientRect();
+  mousePos.x = e.clientX - rect.left;
+  mousePos.y = e.clientY - rect.top;
+}
+
+function handleMouseDown() {
+  if (gameOver) return;
+  const bullet = ship.shoot(mousePos);
+  if (bullet) {
+    bullets.push(bullet);
+    soundEffects.shoot();
+  }
+}
+
 function createRandomAsteroid() {
   const asteroidSizes = ["big", "medium", "small"];
   const w = canvas.width;
@@ -109,19 +124,10 @@ export function initGame(canvasElement, sounds) {
   bullets = [];
   ship = new Ship(canvas.width / 2, canvas.height / 2);
 
-  canvas.addEventListener("mousemove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mousePos.x = e.clientX - rect.left;
-    mousePos.y = e.clientY - rect.top;
-  });
-  canvas.addEventListener("mousedown", () => {
-    if(gameOver)return;
-    const bullet = ship.shoot(mousePos);
-    if (bullet) {
-      bullets.push(bullet);
-      soundEffects.shoot();
-    }
-  });
+  canvas.removeEventListener("mousemove", handleMouseMove);
+  canvas.removeEventListener("mousedown", handleMouseDown);
+  canvas.addEventListener("mousemove", handleMouseMove);
+  canvas.addEventListener("mousedown", handleMouseDown);
   fillAsteroids();
 }
 
