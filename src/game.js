@@ -2,6 +2,7 @@
 import Asteroid from "./entities/asteroid.js";
 import Ship from "./entities/ship.js";
 import Bullet from "./entities/bullet.js";
+import { updateAsteroids, updateLives, updateScore } from "./ui/hud.js";
 import {
   bullet_with_asteroid,
   ship_with_asteroid,
@@ -16,7 +17,23 @@ let bullets = [];
 let mousePos = { x: 0, y: 0 };
 let ship;
 let soundEffects;
+let gameOver = false;
 const level = 1; //de momento asi seteado para que luego haya el final boss :p
+
+function handleMouseMove(e) {
+  const rect = canvas.getBoundingClientRect();
+  mousePos.x = e.clientX - rect.left;
+  mousePos.y = e.clientY - rect.top;
+}
+
+function handleMouseDown() {
+  if (gameOver) return;
+  const bullet = ship.shoot(mousePos);
+  if (bullet) {
+    bullets.push(bullet);
+    soundEffects.shoot();
+  }
+}
 
 function createRandomAsteroid() {
   const asteroidSizes = ["big", "medium", "small"];
@@ -49,7 +66,7 @@ function fillAsteroids() {
 }
 export function update(deltaTime) {
   //fillAsteroids();
-
+  if(gameOver)return;
   ship.update(deltaTime, canvas.width, canvas.height, mousePos);
 
   for (const asteroid of asteroids) {
@@ -65,25 +82,37 @@ export function update(deltaTime) {
 }
 function check_collisions() {
   for (const asteroid of asteroids) {
-    if (ship_with_asteroid(ship, asteroid)) {
-      //quitarle una vida a la nave y volverla "invencible 3 segundos"
-			//si ya no tiene vidas RECIEN la matamos pi
-			soundEffects.hurt();
+    if (ship.isCollisionActivate() && ship_with_asteroid(ship, asteroid)) {
+      if (ship.hurt()) {
+        soundEffects.hurt();
+        ship.reboot(canvas.width, canvas.height);
+        updateLives();
+      } else {
+        soundEffects.gameOver();
+        gameOver = true;
+        asteroids = [];
+        bullets = [];
+        ship.destroy();
+        updateLives();
+        return;
+      }
     }
   }
+
   for (const bullet of bullets) {
     for (const asteroid of asteroids) {
       if (bullet_with_asteroid(bullet, asteroid)) {
-        //matar la bala y el asteroide
         bullet.alive = false;
+        updateScore(asteroid.score());
         if (asteroid.size === "big" || asteroid.size === "medium") {
           const [first, second] = asteroid.divide();
           asteroids.push(first);
           asteroids.push(second);
         }
+
         asteroids = asteroids.filter((a) => a !== asteroid);
-				soundEffects.explosion();
-        //pero si el asteroide es grande o mediano, spawneamos 2 mas chicos
+        soundEffects.explosion();
+        updateAsteroids(asteroids.length);
         break;
       }
     }
@@ -91,6 +120,7 @@ function check_collisions() {
 }
 
 export function initGame(canvasElement, sounds) {
+  gameOver = false;
   canvas = canvasElement;
   ctx = canvas.getContext("2d");
   soundEffects = sounds;
@@ -98,22 +128,36 @@ export function initGame(canvasElement, sounds) {
   bullets = [];
   ship = new Ship(canvas.width / 2, canvas.height / 2);
 
-  canvas.addEventListener("mousemove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mousePos.x = e.clientX - rect.left;
-    mousePos.y = e.clientY - rect.top;
-  });
-  canvas.addEventListener("mousedown", () => {
-    const bullet = ship.shoot(mousePos);
-    if (bullet) {
-      bullets.push(bullet);
-      soundEffects.shoot();
-    }
-  });
+  canvas.removeEventListener("mousemove", handleMouseMove);
+  canvas.removeEventListener("mousedown", handleMouseDown);
+  canvas.addEventListener("mousemove", handleMouseMove);
+  canvas.addEventListener("mousedown", handleMouseDown);
   fillAsteroids();
+  updateAsteroids(asteroids.length);
 }
 
 export function draw() {
+  if (gameOver) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.font = "40px 'Press Start 2P'";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+
+    ctx.font = "16px 'Press Start 2P'";
+    ctx.fillText(
+      "Refresh to try again",//seria bonito un boton aquipero luego vemos
+      canvas.width / 2,
+      canvas.height / 2 + 35,
+    );
+    return;
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (const asteroid of asteroids) {
     const d = asteroid.radius * 2;
