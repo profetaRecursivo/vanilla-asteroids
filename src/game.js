@@ -16,6 +16,7 @@ let bullets = [];
 let mousePos = { x: 0, y: 0 };
 let ship;
 let soundEffects;
+let gameOver = false;
 const level = 1; //de momento asi seteado para que luego haya el final boss :p
 
 function createRandomAsteroid() {
@@ -49,7 +50,7 @@ function fillAsteroids() {
 }
 export function update(deltaTime) {
   //fillAsteroids();
-
+  if(gameOver)return;
   ship.update(deltaTime, canvas.width, canvas.height, mousePos);
 
   for (const asteroid of asteroids) {
@@ -71,6 +72,9 @@ function check_collisions() {
         ship.reboot(canvas.width, canvas.height);
       } else {
         soundEffects.gameOver();
+        gameOver = true;
+        asteroids = [];
+        bullets = [];
         ship.destroy();
         return;
       }
@@ -97,6 +101,7 @@ function check_collisions() {
 }
 
 export function initGame(canvasElement, sounds) {
+  gameOver = false;
   canvas = canvasElement;
   ctx = canvas.getContext("2d");
   soundEffects = sounds;
@@ -110,6 +115,7 @@ export function initGame(canvasElement, sounds) {
     mousePos.y = e.clientY - rect.top;
   });
   canvas.addEventListener("mousedown", () => {
+    if(gameOver)return;
     const bullet = ship.shoot(mousePos);
     if (bullet) {
       bullets.push(bullet);
@@ -120,6 +126,27 @@ export function initGame(canvasElement, sounds) {
 }
 
 export function draw() {
+  if (gameOver) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.font = "40px 'Press Start 2P'";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+
+    ctx.font = "16px 'Press Start 2P'";
+    ctx.fillText(
+      "Refresh to try again",//seria bonito un boton aquipero luego vemos
+      canvas.width / 2,
+      canvas.height / 2 + 35,
+    );
+    return;
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (const asteroid of asteroids) {
     const d = asteroid.radius * 2;
