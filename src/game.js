@@ -2,6 +2,7 @@
 import Asteroid from "./entities/asteroid.js";
 import Ship from "./entities/ship.js";
 import Bullet from "./entities/bullet.js";
+import { updateAsteroids, updateLives, updateScore } from "./ui/hud.js";
 import {
   bullet_with_asteroid,
   ship_with_asteroid,
@@ -85,12 +86,14 @@ function check_collisions() {
       if (ship.hurt()) {
         soundEffects.hurt();
         ship.reboot(canvas.width, canvas.height);
+        updateLives();
       } else {
         soundEffects.gameOver();
         gameOver = true;
         asteroids = [];
         bullets = [];
         ship.destroy();
+        updateLives();
         return;
       }
     }
@@ -100,7 +103,7 @@ function check_collisions() {
     for (const asteroid of asteroids) {
       if (bullet_with_asteroid(bullet, asteroid)) {
         bullet.alive = false;
-
+        updateScore(asteroid.score());
         if (asteroid.size === "big" || asteroid.size === "medium") {
           const [first, second] = asteroid.divide();
           asteroids.push(first);
@@ -109,6 +112,7 @@ function check_collisions() {
 
         asteroids = asteroids.filter((a) => a !== asteroid);
         soundEffects.explosion();
+        updateAsteroids(asteroids.length);
         break;
       }
     }
@@ -129,6 +133,7 @@ export function initGame(canvasElement, sounds) {
   canvas.addEventListener("mousemove", handleMouseMove);
   canvas.addEventListener("mousedown", handleMouseDown);
   fillAsteroids();
+  updateAsteroids(asteroids.length);
 }
 
 export function draw() {
