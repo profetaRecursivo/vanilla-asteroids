@@ -65,25 +65,31 @@ export function update(deltaTime) {
 }
 function check_collisions() {
   for (const asteroid of asteroids) {
-    if (ship_with_asteroid(ship, asteroid)) {
-      //quitarle una vida a la nave y volverla "invencible 3 segundos"
-			//si ya no tiene vidas RECIEN la matamos pi
-			soundEffects.hurt();
+    if (ship.isCollisionActivate() && ship_with_asteroid(ship, asteroid)) {
+      if (ship.hurt()) {
+        soundEffects.hurt();
+        ship.reboot(canvas.width, canvas.height);
+      } else {
+        soundEffects.gameOver();
+        ship.destroy();
+        return;
+      }
     }
   }
+
   for (const bullet of bullets) {
     for (const asteroid of asteroids) {
       if (bullet_with_asteroid(bullet, asteroid)) {
-        //matar la bala y el asteroide
         bullet.alive = false;
+
         if (asteroid.size === "big" || asteroid.size === "medium") {
           const [first, second] = asteroid.divide();
           asteroids.push(first);
           asteroids.push(second);
         }
+
         asteroids = asteroids.filter((a) => a !== asteroid);
-				soundEffects.explosion();
-        //pero si el asteroide es grande o mediano, spawneamos 2 mas chicos
+        soundEffects.explosion();
         break;
       }
     }
