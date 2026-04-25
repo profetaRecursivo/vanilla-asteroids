@@ -88,10 +88,9 @@ export default class Ship {
   }
 
   shoot(mousePos) {
-  // calculo dist de nave y mouse
-  const dx = mousePos.x - this.x;
-  const dy = mousePos.y - this.y;
-  const distance = Math.hypot(dx, dy);
+    const dx = mousePos.x - this.x;
+    const dy = mousePos.y - this.y;
+    const distance = Math.hypot(dx, dy);
 
   const dirX = distance !== 0 ? dx / distance : 0;
   const dirY = distance !== 0 ? dy / distance : -1;
@@ -103,8 +102,8 @@ export default class Ship {
   const bvx = dirX * bulletSpeed;
   const bvy = dirY * bulletSpeed;
 
-  return new Bullet(noseX, noseY, bvx, bvy);
-}
+    return new Bullet(noseX, noseY, bvx, bvy);
+  }
 
   draw(ctx) {
   ctx.save();
