@@ -18,12 +18,32 @@
       <button type="button" class="press-start-2p-regular" id="play-button">Play Game</button>
     </div>
     <div class="game">
-      <div class="hud">
-        <div id="score">Score: <span id="score-value">0</span> pts</div>
-        <div id="lives">Lives: <span id="lives-value">0</span></div>
-        <div id="level">Level: <span id="level-value">1</span></div>
-        <canvas id="scenario" width="640" height="360"></canvas>
+      <div class="hud press-start-2p-regular">
+        <div class="hud-main">
+          <div class="hud-item hud-item--score">
+            <span class="hud-label">Score</span>
+            <span class="hud-value" id="score-value">000000</span>
+          </div>
+
+          <div class="hud-item">
+            <span class="hud-label">Lives</span>
+            <span class="hud-value" id="lives-value">3</span>
+          </div>
+
+          <div class="hud-item">
+            <span class="hud-label">Level</span>
+            <span class="hud-value" id="level-value">1</span>
+          </div>
+
+          <div class="hud-item hud-item--secondary">
+            <span class="hud-label">Asteroids</span>
+            <span class="hud-value hud-value--small" id="asteroids-value">10</span>
+          </div>
+          <!-- estaria maldito que se ponga en rojo y luego diga BOSS INCOMING, luego lo ponemos si nos da el tiempo -->
+          <div class="hud-status" id="hud-status">Ready</div>
+        </div>
       </div>
+      <canvas id="scenario" width="640" height="360"></canvas>
     </div>
   </body>
   <script type="module" src="src/main.js"></script>

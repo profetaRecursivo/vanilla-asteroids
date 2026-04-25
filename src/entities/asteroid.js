@@ -42,7 +42,7 @@ export default class Asteroid {
     else speed = 120;
     return [Math.cos(angle) * speed, Math.sin(angle) * speed];
   }
-  
+
   update(dt, worldWidth, worldHeight) {
     this.x += this.vx * dt;
     this.y += this.vy * dt;
@@ -62,15 +62,24 @@ export default class Asteroid {
     const second = new Asteroid(this.x, this.y, newSize);
     const angle = Math.atan2(this.vy, this.vx);
     const speed = Math.sqrt(this.vx ** 2 + this.vy ** 2);
-    const deviation = (Math.PI / 6);
-    
+    const deviation = Math.PI / 6;
     const angle1 = angle - deviation;
     const angle2 = angle + deviation;
-    
     first.vx = Math.cos(angle1) * speed;
     first.vy = Math.sin(angle1) * speed;
     second.vx = Math.cos(angle2) * speed;
     second.vy = Math.sin(angle2) * speed;
     return [first, second];
+  }
+  score() {
+    let ans;
+    if (this.size === "big") {
+      ans = 2048;
+    } else if (this.size === "medium") {
+      ans = 1024;
+    } else {
+      ans = 512;
+    }
+    return ans;
   }
 }
