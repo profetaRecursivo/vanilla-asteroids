@@ -92,27 +92,27 @@ export default class Ship {
     const dy = mousePos.y - this.y;
     const distance = Math.hypot(dx, dy);
 
-    const dirX = distance !== 0 ? dx / distance : 0;
-    const dirY = distance !== 0 ? dy / distance : -1;
+  const dirX = distance !== 0 ? dx / distance : 0;
+  const dirY = distance !== 0 ? dy / distance : -1;
 
-    const noseX = this.x + dirX * this.radius;
-    const noseY = this.y + dirY * this.radius;
+  const noseX = this.x + dirX * this.radius;
+  const noseY = this.y + dirY * this.radius;
 
-    const bulletSpeed = 600;
-    const bvx = dirX * bulletSpeed;
-    const bvy = dirY * bulletSpeed;
+  const bulletSpeed = 600;
+  const bvx = dirX * bulletSpeed;
+  const bvy = dirY * bulletSpeed;
 
     return new Bullet(noseX, noseY, bvx, bvy);
   }
 
   draw(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.angle);
-    const d = this.radius * 2;
-    ctx.drawImage(this.sprite, -this.radius, -this.radius, d, d);
-    ctx.restore();
-  }
+  ctx.save();
+  ctx.translate(this.x, this.y);
+  ctx.rotate(this.angle); // usa el angulo calculado par arotar
+  const d = this.radius * 2;
+  ctx.drawImage(this.sprite, -this.radius, -this.radius, d, d);
+  ctx.restore();
+}
 
   destroy() {
     window.removeEventListener("keydown", this._onKeyDown);

@@ -128,6 +128,26 @@ export function initGame(canvasElement, sounds) {
   bullets = [];
   ship = new Ship(canvas.width / 2, canvas.height / 2);
 
+  canvas.addEventListener("mousemove", (e) => {
+	// estas coordenadas son del canvas css lo que se dibuja
+    //const rect = canvas.getBoundingClientRect();
+    //mousePos.x = e.clientX - rect.left;
+    //mousePos.y = e.clientY - rect.top;
+	// estas son de el canvas real aqui esta la posicion del mouse
+	// entonces las coordenadas son distintas ya que el canvas css varia segun la pantalla
+	const rect = canvas.getBoundingClientRect();
+  	const scaleX = canvas.width  / rect.width;
+  	const scaleY = canvas.height / rect.height;
+  	mousePos.x = (e.clientX - rect.left) * scaleX;
+  	mousePos.y = (e.clientY - rect.top)  * scaleY;
+  });
+  canvas.addEventListener("mousedown", () => {
+    const bullet = ship.shoot(mousePos);
+    if (bullet) {
+      bullets.push(bullet);
+      soundEffects.shoot();
+    }
+  });
   canvas.removeEventListener("mousemove", handleMouseMove);
   canvas.removeEventListener("mousedown", handleMouseDown);
   canvas.addEventListener("mousemove", handleMouseMove);
